@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type RuleStatement, RuleStatementType, RuleValueType, RuleOperateType, RuleEngine } from './../src'
+import { RuleValueType, checkValue } from './../src'
 
 const zhangSan = {
   id: 1,
@@ -31,7 +31,7 @@ const wangWu = {
 
 
 test('check object', () => {
-  expect(RuleEngine.checkValue({
+  expect(checkValue({
     name: 'student',
     type: RuleValueType.OBJECT,
     child: [
@@ -52,7 +52,7 @@ test('check object', () => {
 })
 
 test('check tuple', () => {
-  expect(RuleEngine.checkValue({
+  expect(checkValue({
     name: 'tuple',
     type: RuleValueType.TUPLE,
     child: [
@@ -80,7 +80,7 @@ test('check tuple', () => {
 })
 
 test('check list', () => {
-  expect(RuleEngine.checkValue({
+  expect(checkValue({
     name: 'list',
     type: RuleValueType.LIST,
     child: [
@@ -108,14 +108,14 @@ test('check list', () => {
 })
 
 test('check base type', () => {
-  expect(RuleEngine.checkValue({ name: 'name', type: RuleValueType.STR }, 'name')).toBeTruthy()
-  expect(RuleEngine.checkValue({ name: 'died', type: RuleValueType.BOOL }, false)).toBeTruthy()
-  expect(RuleEngine.checkValue({ name: 'age', type: RuleValueType.INT }, 20)).toBeTruthy()
-  expect(RuleEngine.checkValue({ name: 'skills', type: RuleValueType.LIST, child: [{ name: 'skill', type: RuleValueType.STR }] }, ['attack', 'eat', 'drink'])).toBeTruthy()
+  expect(checkValue({ name: 'name', type: RuleValueType.STR }, 'name')).toBeTruthy()
+  expect(checkValue({ name: 'died', type: RuleValueType.BOOL }, false)).toBeTruthy()
+  expect(checkValue({ name: 'age', type: RuleValueType.INT }, 20)).toBeTruthy()
+  expect(checkValue({ name: 'skills', type: RuleValueType.LIST, child: [{ name: 'skill', type: RuleValueType.STR }] }, ['attack', 'eat', 'drink'])).toBeTruthy()
 })
 
 test('check complex type', () => {
-  expect(RuleEngine.checkValue({
+  expect(checkValue({
     name: 'school',
     type: RuleValueType.OBJECT,
     child: [

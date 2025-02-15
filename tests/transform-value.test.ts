@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { type RuleStatement, RuleStatementType, RuleValueType, RuleOperateType, RuleEngine } from './../src'
+import { RuleValueType, transformValue } from './../src'
 
 const zhangSan = {
   id: 1,
@@ -59,7 +59,7 @@ const school = {
 }
 
 test('transform tuple value', () => {
-  const result = RuleEngine.transformValue({
+  const result = transformValue({
     name: 'tuple',
     type: RuleValueType.TUPLE,
     child: [
@@ -92,7 +92,7 @@ test('transform tuple value', () => {
 })
 
 test('transform list value', () => {
-  const result = RuleEngine.transformValue({
+  const result = transformValue({
     name: 'list',
     type: RuleValueType.LIST,
     child: [
@@ -122,15 +122,15 @@ test('transform list value', () => {
 })
 
 test('transform base value', () => {
-  expect(RuleEngine.transformValue({ name: 'name', type: RuleValueType.STR }, zhangSan.name)).toEqual(zhangSan.name)
+  expect(transformValue({ name: 'name', type: RuleValueType.STR }, zhangSan.name)).toEqual(zhangSan.name)
 
-  expect(RuleEngine.transformValue({ name: 'age', type: RuleValueType.INT }, zhangSan.age)).toEqual(zhangSan.age)
+  expect(transformValue({ name: 'age', type: RuleValueType.INT }, zhangSan.age)).toEqual(zhangSan.age)
 
-  expect(RuleEngine.transformValue({ name: 'birthday', type: RuleValueType.DATE }, zhangSan.birthday)).toEqual(zhangSan.birthday)
+  expect(transformValue({ name: 'birthday', type: RuleValueType.DATE }, zhangSan.birthday)).toEqual(zhangSan.birthday)
 
-  expect(RuleEngine.transformValue({ name: 'died', type: RuleValueType.BOOL }, undefined)).toEqual(false)
+  expect(transformValue({ name: 'died', type: RuleValueType.BOOL }, undefined)).toEqual(false)
 
-  expect(RuleEngine.transformValue(
+  expect(transformValue(
     {
       name: 'skills',
       type: RuleValueType.LIST,
@@ -144,7 +144,7 @@ test('transform base value', () => {
   )
     .toEqual(zhangSan.skills)
 
-  expect(RuleEngine.transformValue(
+  expect(transformValue(
     {
       name: 'skills',
       type: RuleValueType.LIST,
@@ -160,7 +160,7 @@ test('transform base value', () => {
 })
 
 test('transform complex value', () => {
-  expect(RuleEngine.transformValue({
+  expect(transformValue({
     name: 'school',
     type: RuleValueType.OBJECT,
     child: [
