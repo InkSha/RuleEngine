@@ -1,7 +1,9 @@
 import { RuleValueType, type RuleValue } from './RuleValue'
 import { checkValue } from './CheckValue'
 
-export function transformValue(target: RuleValue, data: unknown): unknown {
+export function transformValue(target: RuleValue, object: Record<string, unknown>): unknown {
+  const data = object[target.name]
+
   switch (target.type) {
     case RuleValueType.ANY:
       return data
@@ -72,7 +74,7 @@ export function transformValue(target: RuleValue, data: unknown): unknown {
             if (!checkValue(property, data[property.name])) {
               throw new TypeError(`${data[property.name]} type not is ${target.name}.${property.name} need type`)
             }
-            result[property.name] = transformValue(property, data[property.name])
+            result[property.name] = transformValue(property, data[property.name] as Record<string, unknown>)
           }
         }
 

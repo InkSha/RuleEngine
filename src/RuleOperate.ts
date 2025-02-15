@@ -1,13 +1,15 @@
-import type { RuleEvent } from './RuleEvent'
 import type { RuleValue } from './RuleValue'
 
-export enum RuleOperateType {
+export enum RuleConditionType {
   /** 和 */
   AND = 'and',
   /** 或 */
   OR = 'or',
   /** 非 */
   NOT = 'not',
+}
+
+export enum RuleOperateType {
   /** 等于 */
   EQ = 'eq',
   /** 不等于 */
@@ -42,8 +44,8 @@ export enum RuleOperateType {
   NREGEX = 'nregex',
   /** 为 null */
   ISNULL = 'isnull',
-  /** 为空 */
-  ISEMPTY = 'isempty',
+  /** 为 undefined */
+  ISUNDEFINED = 'isundefined',
   /** 增 */
   INC = 'inc',
   /** 减 */
@@ -54,21 +56,100 @@ export enum RuleOperateType {
   DIV = 'div',
   /** 长度 */
   LEN = 'length',
+  /** 设置 */
+  SET = 'set'
 }
 
-export interface RuleOperate {
-  operate: RuleOperateType
+/**
+ * rule opreate value
+ */
+export interface RuleOperateValue {
+  /**
+   * opereate target object
+   */
   target: RuleValue
+  /**
+   * operate value
+   */
   value?: unknown
-  index?: string
+  /**
+   * operate target object property
+   *
+   * e.g. `index = ['users', '2', 'name'] opreate object = target['users']['2']['name']`
+   */
+  index?: string[]
+}
+
+/**
+ * rule operate object
+ */
+export type RuleOperand =
+  | RuleOperate
+  | RuleOperateValue
+
+/**
+ * rule operate
+ */
+export interface RuleOperate {
+  /**
+   * left operate value
+   *
+   * e.g. operate = 1 + 2, left = 1
+   */
+  left: RuleOperand
+  /**
+   * middle operate symbol
+   *
+   * e.g. operate = 1 + 2, middle = +
+   */
+  middle: RuleOperateType
+  /**
+   * optional right operate value
+   *
+   * e.g. operate = 1 + 2, right = 2
+   *
+   * e.g. opreate = left is null, is null is middle symbol
+   */
+  right?: RuleOperand
+  /**
+   * operate priority
+   */
   priority?: number
+  /**
+   * operate description
+   */
   description?: string
-  after?: RuleOperate[]
-  otherwise?: RuleOperate[]
-  retry?: number
-  trigger?: RuleEvent[]
-  message?: string | {
+  /**
+   * opreate message
+   */
+  message?: {
+    /**
+     * on execute pass print message
+     */
     pass?: string
+    /**
+     * on execute fail print message
+     */
     fail?: string
   }
+}
+
+/**
+ * rule condition
+ */
+export interface RuleCondition {
+  /**
+   * rule condition type
+   */
+  type: RuleConditionType
+  /**
+   * rule condition list
+   *
+   * e.g.
+   *
+   * a > b && b > c
+   *
+   * a > b && (b > c || c > d || !(d > e))
+   */
+  operates: (RuleCondition | RuleOperate)[]
 }

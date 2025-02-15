@@ -1,6 +1,6 @@
 import { checkValue } from './CheckValue'
 import { type RuleOperate, RuleOperateType } from './RuleOperate'
-import { RuleStatementType, type RuleStatement } from './RuleStatement'
+import type { RuleStatementType, RuleStatement } from './RuleStatement'
 
 export type RuleEngineStatementHandlerName = `execute${Uppercase<RuleStatementType>}`
 
@@ -69,40 +69,10 @@ export class RuleEngine {
       return
     }
 
-    switch (rule.type) {
-      case RuleStatementType.IF:
-        return RuleEngine.executeIF(rule, data)
-      case RuleStatementType.ELIF:
-        return RuleEngine.executeELIF(rule, data)
-      case RuleStatementType.ELSE:
-        return RuleEngine.executeELSE(rule, data)
-      case RuleStatementType.FOR:
-        return RuleEngine.executeFOR(rule, data)
-      case RuleStatementType.WHILE:
-        return RuleEngine.executeWHILE(rule, data)
-      case RuleStatementType.DELAY:
-        return RuleEngine.executeDELAY(rule, data)
-      case RuleStatementType.TRY:
-        return RuleEngine.executeTRY(rule, data)
-      case RuleStatementType.ASSIGN:
-        return RuleEngine.executeASSIGN(rule, data)
-      case RuleStatementType.DEL:
-        return RuleEngine.executeDEL(rule, data)
-      case RuleStatementType.CLEAR:
-        return RuleEngine.executeCLEAR(rule, data)
-      case RuleStatementType.VAR:
-        return RuleEngine.executeVAR(rule, data)
-      case RuleStatementType.BREAK:
-        return RuleEngine.executeBREAK(rule, data)
-      case RuleStatementType.CONTINUE:
-        return RuleEngine.executeCONTINUE(rule, data)
-      case RuleStatementType.RETURN:
-        return RuleEngine.executeRETURN(rule, data)
-      default: {
-        const _: never = rule.type
-        break
-      }
-    }
+    const methodName: RuleEngineStatementHandlerName = `execute${rule.type.toUpperCase() as Uppercase<RuleStatementType>}`
+
+    if (methodName in RuleEngine) return RuleEngine[methodName](rule, data)
+
   }
 
   public static retryWrapper<R = unknown>(callback: () => R, retry: RuleStatement['retry']): R | null {
@@ -135,10 +105,7 @@ export class RuleEngine {
   }
 
   public static executeOperate(operate: RuleOperate, data: unknown) {
-    if (checkValue(operate.target, data)) {
-      switch (operate.operate) {
-      }
-    }
+    // pass
   }
 
   public static executeIF(rule: RuleStatement, data: unknown) {
