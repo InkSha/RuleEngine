@@ -1,9 +1,7 @@
 import { RuleValueType, type RuleValue } from './RuleValue'
 import { checkValue } from './CheckValue'
 
-export function transformValue(target: RuleValue, object: Record<string, unknown>): unknown {
-  const data = object[target.name]
-
+export function transformValue<T>(target: RuleValue, data: unknown): unknown {
   switch (target.type) {
     case RuleValueType.ANY:
       return data
